@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+
+  postgresdb:
+    image: postgres:16
+    container_name: ec23cb6b67b0_Practica05
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  tomcatapp:
+    build: .
+    container_name: tomcat_DAPP01Practica05
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgresdb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/mydatabase
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    networks:
+      - app-network
+
+volumes:
+  postgres-data:
+
+networks:
+  app-network:
+    driver: bridge
